@@ -50,16 +50,19 @@ public class CtxAccess extends Task<ClientContext> {
       int[] finalarray;
         int arraySize;
         String pattern;
-        pattern = names[0];
-        for(int i = 1; i < names.length; i++) {
-            pattern += "|" + names[i];
-        }
-        //ctx.backpack.select().name(Pattern.compile("(Copper|Tin) ore")).each(...)
-        arraySize = ctx.inventory.select().name(Pattern.compile(pattern)).size();
-        finalarray = new int[arraySize];
-        for(int i = 0; i < arraySize; i++) {
-            finalarray[i] = ctx.inventory.poll().id();
-        }
+        if(names.length > 0) {
+            pattern = names[0];
+            for(int i = 1; i < names.length; i++) {
+                pattern += "|" + names[i];
+            }
+            //ctx.backpack.select().name(Pattern.compile("(Copper|Tin) ore")).each(...)
+            arraySize = ctx.inventory.select().name(Pattern.compile(pattern)).size();
+            finalarray = new int[arraySize];
+            for(int i = 0; i < arraySize; i++) {
+                finalarray[i] = ctx.inventory.poll().id();
+            }
+        } else
+            finalarray = new int[]{};
         return finalarray;  
     }
     

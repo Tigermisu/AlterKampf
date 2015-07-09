@@ -9,6 +9,7 @@ package alterkampf;
  *
  * @author Christopher
  */
+import javax.swing.JOptionPane;
 import org.powerbot.script.rt4.ClientContext;
 import org.powerbot.script.rt4.Item;
 
@@ -16,12 +17,11 @@ public class Eat extends Task<ClientContext> {
     public int[] foodId = {0};
     public double minhealth = 3;
     private double clickcooldown, tgtcooldown = 5;
-    private boolean clicked = false, hasFood = true;
+    private boolean clicked = false;
+    public boolean hasFood = true;
     
     public Eat(ClientContext ctx) {
         super(ctx);
-        minhealth = 5;
-        System.out.println("Min health:" + minhealth);
     }
     
     @Override
@@ -39,11 +39,15 @@ public class Eat extends Task<ClientContext> {
     public void execute() {
         Item food;
         System.out.println("Eating");
+        AlterKampf.status = "Eating";
         if(!ctx.inventory.select().id(foodId).isEmpty())
             food = ctx.inventory.poll();
         else {
             System.out.println("Out of food");
+            JOptionPane.showMessageDialog(null, "Out of food");
             hasFood = false;
+            AlterKampf.status = "idling (no food)";
+            Kill.stop = true;
             return;
         }       
             
