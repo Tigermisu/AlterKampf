@@ -1,14 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+// AlterKampf RSBot Autofighter for RSBot v6 - rt4 client
+// Made by Tigermisu
 package alterkampf;
 
-/**
- *
- * @author Christopher
- */
+
 import org.powerbot.script.rt4.ClientContext;
 
 public class LogOut extends Task<ClientContext> {

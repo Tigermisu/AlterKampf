@@ -1,8 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+// AlterKampf RSBot Autofighter for RSBot v6 - rt4 client
+// Made by Tigermisu
 package alterkampf;
 
 import java.util.Arrays;
@@ -13,10 +10,7 @@ import javax.swing.JOptionPane;
 import org.powerbot.script.rt4.ClientContext;
 import org.powerbot.script.rt4.BasicQuery;
 
-/**
- *
- * @author Christopher
- */
+
 public class AlterKampfGUI extends javax.swing.JFrame {
 
     /**
@@ -236,12 +230,19 @@ public class AlterKampfGUI extends javax.swing.JFrame {
     void setFood(){
         // Get the index of all the selected items
         int[] selectedIx = foodList.getSelectedIndices();
+        int[] foodIDs;
         String[] names = new String[selectedIx.length];
         // Get all the selected items using the indices
         for (int i = 0; i < selectedIx.length; i++) {
           names[i] = (String) foodList.getModel().getElementAt(selectedIx[i]);
         }
-        eat.foodId = accessor.getFoodIDs(names);
+        foodIDs = accessor.getFoodIDs(names);
+        if(foodIDs.length > 0)
+            eat.foodId = foodIDs;
+        else {
+            JOptionPane.showMessageDialog(null, "Warning: Script will run without food");
+            eat.hasFood = false;
+        }
     }
     
     boolean setTargetMonsters() {

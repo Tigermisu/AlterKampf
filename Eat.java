@@ -1,14 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+// AlterKampf RSBot Autofighter for RSBot v6 - rt4 client
+// Made by Tigermisu
 package alterkampf;
 
-/**
- *
- * @author Christopher
- */
+
 import javax.swing.JOptionPane;
 import org.powerbot.script.rt4.ClientContext;
 import org.powerbot.script.rt4.Item;
@@ -26,11 +20,10 @@ public class Eat extends Task<ClientContext> {
     
     @Override
     public boolean activate() {
+        //Prevent spam clicking
         if(clicked) {
             clickcooldown++;
-            if(clickcooldown >= tgtcooldown) {
-                clicked = false;
-            }
+            clicked = clickcooldown < tgtcooldown;
         }
         return ctx.players.local().inCombat() && hasFood && ctx.players.local().health() <= minhealth && !clicked;
     }
@@ -44,16 +37,14 @@ public class Eat extends Task<ClientContext> {
             food = ctx.inventory.poll();
         else {
             System.out.println("Out of food");
-            JOptionPane.showMessageDialog(null, "Out of food");
-            hasFood = false;
-            AlterKampf.status = "idling (no food)";
-            Kill.stop = true;
+            JOptionPane.showMessageDialog(null, "Out of food. Stopping Script");
+            ctx.controller.stop();
             return;
         }       
             
         food.interact("Eat");
         clickcooldown = 0;
-        tgtcooldown = 4 + Math.random() * 2;
+        tgtcooldown = 6 + Math.random() * 2;
         clicked = true;
     }
 }
