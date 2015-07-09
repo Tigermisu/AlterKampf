@@ -1,4 +1,6 @@
 # AlterKampf
 OSRS Autofighter
 
-Alpha Stage - Not recommended to leave robot unattended for long periods of time - Script doesnt halt when there is no more food.
+Simple autofighter, fights and eats. 
+
+Warning: Script stops if it runs out of food, but it will be in danger if the enemies in the area auto attack you.
