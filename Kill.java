@@ -13,7 +13,7 @@ public class Kill extends Task<ClientContext> {
     public int[] npcIDs;
     boolean inCombat, engaged = false;
     private Npc enemy;
-    public static boolean stop = false;
+    public static boolean retaliate = false;
     
     public Kill(ClientContext ctx) {
         super(ctx);
@@ -35,12 +35,29 @@ public class Kill extends Task<ClientContext> {
     public void execute() {
         
         //Select the nearest reachable NPCs out of combat
+        if(!retaliate) {
         enemy = ctx.npcs.id(npcIDs).select(new Filter<Npc>() {
             @Override
             public boolean accept(Npc npc) {
                 return !npc.inCombat() && ctx.movement.reachable(ctx.players.local().tile(), npc);
             }
         }).nearest().poll();
+        } else {
+            //If we are being attacked, retaliate.
+            enemy = (Npc)ctx.players.local().interacting();
+            enemy.interact("Attack");
+            System.out.println("Retaliating");
+            engaged = true;
+            AlterKampf.status = "Retaliating " + enemy.name();
+            //Wait for a bit, or until we're out of combat.
+            Condition.wait(new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                    return !ctx.players.local().inCombat();
+                }}, 500, 8);
+            retaliate = false;
+            return;
+        }
 
         //If the enemy is in viewport, attack him.
         if(enemy.inViewport()) {
@@ -50,14 +67,14 @@ public class Kill extends Task<ClientContext> {
             //If the player has just disengaged another enemy, wait a bit before continuing
             //(Prevents spam clicking)
             if(ctx.players.local().inCombat())
-                Condition.sleep(1500);
+                Condition.sleep(2000);
             //Check if engage was successful
-            //3.5s timeout
+            //4s timeout
             engaged = Condition.wait(new Callable<Boolean>() {
                     @Override
                     public Boolean call() throws Exception {
                     return ctx.players.local().inCombat();
-                }}, 500, 7);
+                }}, 500, 8);
          } else {
             //if we cannot see the enemy, get close to it.
             ctx.camera.turnTo(enemy);

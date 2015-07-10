@@ -3,8 +3,12 @@
 package alterkampf;
 
 
+import java.util.Arrays;
 import java.util.regex.Pattern;
+import org.powerbot.script.Filter;
 import org.powerbot.script.rt4.ClientContext;
+import org.powerbot.script.rt4.Item;
+import org.powerbot.script.rt4.Npc;
 
 public class CtxAccess extends Task<ClientContext> {
   
@@ -21,7 +25,14 @@ public class CtxAccess extends Task<ClientContext> {
     public void execute() {}
     
     public String[] getInventory() {
-        int arraySize = ctx.inventory.select().size();
+        //refresh the query.
+        ctx.inventory.select();
+        int arraySize = ctx.inventory.select(new Filter<Item>() {
+            @Override
+            public boolean accept(Item item) {
+                return Arrays.asList(item.actions()).contains("Eat");
+            }
+        }).size();
         String[] finalArray = new String[arraySize];
         for(int i = 0; i < arraySize; i++) {
             finalArray[i] = ctx.inventory.poll().name();
@@ -30,7 +41,14 @@ public class CtxAccess extends Task<ClientContext> {
     }
     
     public String[] getMonsterNames() {
-        int arraySize = ctx.npcs.select().nearest().limit(30).size();
+        //refresh the query.
+        ctx.npcs.select();
+        int arraySize = ctx.npcs.select(new Filter<Npc>() {
+            @Override
+            public boolean accept(Npc npc) {
+                return Arrays.asList(npc.actions()).contains("Attack");
+            }
+        }).nearest().limit(30).size();
         String[] finalArray = new String[arraySize];
         for(int i = 0; i < arraySize; i++) {
             finalArray[i] = ctx.npcs.poll().name();
@@ -46,7 +64,6 @@ public class CtxAccess extends Task<ClientContext> {
             for(int i = 1; i < names.length; i++) {
                 pattern += "|" + names[i];
             }
-            //ctx.backpack.select().name(Pattern.compile("(Copper|Tin) ore")).each(...)
             arraySize = ctx.inventory.select().name(Pattern.compile(pattern)).size();
             finalarray = new int[arraySize];
             for(int i = 0; i < arraySize; i++) {

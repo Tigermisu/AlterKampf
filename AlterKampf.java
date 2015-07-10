@@ -10,17 +10,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
 // Powerbot
 import org.powerbot.script.PollingScript;
 import org.powerbot.script.Script;
 import org.powerbot.script.rt4.ClientContext;
 import org.powerbot.script.rt4.Constants;
+import org.powerbot.script.MessageEvent;
 import org.powerbot.script.PaintListener;
+
+import org.powerbot.script.MessageListener;
 
 
 @Script.Manifest(name = "Alter Kampfer", description = "Simple autofighter for any monster.", properties = "client=4")
 
-public class AlterKampf extends PollingScript<ClientContext> implements PaintListener {
+public class AlterKampf extends PollingScript<ClientContext> implements PaintListener, MessageListener {
 
     //Variables used in polling/script
     List<Task> taskList = new ArrayList<Task>();
@@ -28,8 +32,8 @@ public class AlterKampf extends PollingScript<ClientContext> implements PaintLis
 
     //Variables used in the paint;   
     public static String status = "Waiting";
-    final int x = 20, y = 400, width = 300;
-    final String title = "Autokampfer Alpha Release";
+    final int x = 5, y = 220, width = 300;
+    final String title = "Autokampfer v1.0";
     String currentTime = "00:00:00";    
     final Font font = new Font("URW Chancery L", Font.PLAIN, 11);
     final float startAttackXp = ctx.skills.experience(org.powerbot.script.rt4.Constants.SKILLS_ATTACK);
@@ -39,9 +43,9 @@ public class AlterKampf extends PollingScript<ClientContext> implements PaintLis
     float attackXp, strengthXp, defenceXp, hitpointsXp, totalXp;
     //For keeping track of time
     final long startTime = System.currentTimeMillis();
-    int hours = (int) (System.currentTimeMillis() - startTime) / 3600000;
-    int minutes = (int) (System.currentTimeMillis() - startTime) / 60000 - hours * 60;
-    int seconds = (int) (System.currentTimeMillis() - startTime) / 1000 - hours * 3600 - minutes * 60;
+    int hours = 0;
+    int minutes = 0;
+    int seconds = 0;
     long finalTime = System.currentTimeMillis() - startTime;
     int timeElapsed = hours + minutes + seconds;
     double runTime;
@@ -68,7 +72,6 @@ public class AlterKampf extends PollingScript<ClientContext> implements PaintLis
         LogOut logout = new LogOut(ctx);
         //Add the tasks to the task list
         taskList.addAll(Arrays.asList(kill, eat, antiban, logout));
-        System.out.println("Script version v: 0.25 Alpha Release ");
         //Invoke the gui
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
@@ -96,7 +99,7 @@ public class AlterKampf extends PollingScript<ClientContext> implements PaintLis
     }
     
     @Override
-    public void resume() {
+    public void suspend() {
         gui.setVisible(true);
     }    
     
@@ -115,13 +118,16 @@ public class AlterKampf extends PollingScript<ClientContext> implements PaintLis
     @Override
     public void repaint(Graphics graphics) {
         //First, calculate all the info
+        hours = (int) (System.currentTimeMillis() - startTime) / 3600000;
+        minutes = (int) (System.currentTimeMillis() - startTime) / 60000 - hours * 60;
+        seconds = (int) (System.currentTimeMillis() - startTime) / 1000 - hours * 3600 - minutes * 60;
         currentTime = String.format("%02d", hours) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
         attackXp = ctx.skills.experience(org.powerbot.script.rt4.Constants.SKILLS_ATTACK);
         strengthXp = ctx.skills.experience(org.powerbot.script.rt4.Constants.SKILLS_STRENGTH);
         defenceXp = ctx.skills.experience(org.powerbot.script.rt4.Constants.SKILLS_DEFENSE);
         hitpointsXp = ctx.skills.experience(org.powerbot.script.rt4.Constants.SKILLS_HITPOINTS);
-        totalXp = attackXp + strengthXp + defenceXp + hitpointsXp;
-        runTime = (double) (System.currentTimeMillis() - startTime) / 3600000;
+        totalXp = attackXp + strengthXp + defenceXp + hitpointsXp - startAttackXp - startStrengthXp - startDefenceXp - startHitpointsXp;
+        runTime = (double)(System.currentTimeMillis() - startTime) / 3600000;
 
         //Then, set the values in the paintstrings array
         paintstrings[0] = "Elapsed time: " + currentTime;
@@ -148,6 +154,15 @@ public class AlterKampf extends PollingScript<ClientContext> implements PaintLis
         g.drawLine(x, y + 12, x + width, y + 12);
         for (int i = 0; i < paintstrings.length; i++) {
             g.drawString(paintstrings[i], x + 4, y + 24 + (i * 12));
+        }
+    }
+    /* END PAINT */
+    
+    //Message Listener.
+    @Override
+    public void messaged(MessageEvent m) {
+        if (m.text().startsWith("I'm already")) {
+            Kill.retaliate = true;
         }
     }
 }
