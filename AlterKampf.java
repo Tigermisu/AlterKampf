@@ -33,7 +33,7 @@ public class AlterKampf extends PollingScript<ClientContext> implements PaintLis
     //Variables used in the paint;   
     public static String status = "Waiting";
     final int x = 5, y = 220, width = 300;
-    final String title = "Autokampfer v1.0";
+    final String title = "AlterKampf v1.0";
     String currentTime = "00:00:00";    
     final Font font = new Font("URW Chancery L", Font.PLAIN, 11);
     final float startAttackXp = ctx.skills.experience(org.powerbot.script.rt4.Constants.SKILLS_ATTACK);
@@ -122,10 +122,10 @@ public class AlterKampf extends PollingScript<ClientContext> implements PaintLis
         minutes = (int) (System.currentTimeMillis() - startTime) / 60000 - hours * 60;
         seconds = (int) (System.currentTimeMillis() - startTime) / 1000 - hours * 3600 - minutes * 60;
         currentTime = String.format("%02d", hours) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
-        attackXp = ctx.skills.experience(org.powerbot.script.rt4.Constants.SKILLS_ATTACK);
-        strengthXp = ctx.skills.experience(org.powerbot.script.rt4.Constants.SKILLS_STRENGTH);
-        defenceXp = ctx.skills.experience(org.powerbot.script.rt4.Constants.SKILLS_DEFENSE);
-        hitpointsXp = ctx.skills.experience(org.powerbot.script.rt4.Constants.SKILLS_HITPOINTS);
+        attackXp = ctx.skills.experience(Constants.SKILLS_ATTACK);
+        strengthXp = ctx.skills.experience(Constants.SKILLS_STRENGTH);
+        defenceXp = ctx.skills.experience(Constants.SKILLS_DEFENSE);
+        hitpointsXp = ctx.skills.experience(Constants.SKILLS_HITPOINTS);
         totalXp = attackXp + strengthXp + defenceXp + hitpointsXp - startAttackXp - startStrengthXp - startDefenceXp - startHitpointsXp;
         runTime = (double)(System.currentTimeMillis() - startTime) / 3600000;
 
