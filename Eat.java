@@ -1,18 +1,14 @@
-// AlterKampf RSBot Autofighter for RSBot v6 - rt4 client
-// Made by Tigermisu
 package alterkampf;
 
-
 import javax.swing.JOptionPane;
+import org.powerbot.script.Condition;
 import org.powerbot.script.rt4.ClientContext;
 import org.powerbot.script.rt4.Item;
 import org.powerbot.script.rt4.Npc;
 
 public class Eat extends Task<ClientContext> {
-    public int[] foodId = {0};
-    public double minhealth = 3;
-    private double clickcooldown, tgtcooldown = 5;
-    private boolean clicked = false;
+    public int[] foodId;
+    public double minhealth;
     public boolean hasFood = true;
     
     public Eat(ClientContext ctx) {
@@ -21,12 +17,7 @@ public class Eat extends Task<ClientContext> {
     
     @Override
     public boolean activate() {
-        //Prevent spam clicking
-        if(clicked) {
-            clickcooldown++;
-            clicked = clickcooldown < tgtcooldown;
-        }
-        return ctx.players.local().inCombat() && hasFood && ctx.players.local().health() <= minhealth && !clicked;
+        return ctx.players.local().inCombat() && hasFood && ctx.players.local().health() <= minhealth;
     }
     
     @Override
@@ -46,8 +37,6 @@ public class Eat extends Task<ClientContext> {
         food.interact("Eat");
         //Click on the enemy to continue attacking.
         ((Npc)ctx.players.local().interacting()).interact("Attack");
-        clickcooldown = 0;
-        tgtcooldown = 6 + Math.random() * 2;
-        clicked = true;
+        Condition.sleep(1000 + (int)(Math.random() * 1000));
     }
 }

@@ -1,14 +1,10 @@
-// AlterKampf RSBot Autofighter for RSBot v6 - rt4 client
-// Made by Tigermisu
 package alterkampf;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import javax.swing.DefaultListModel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import org.powerbot.script.rt4.ClientContext;
-import org.powerbot.script.rt4.BasicQuery;
 
 
 public class AlterKampfGUI extends javax.swing.JFrame {
@@ -16,9 +12,9 @@ public class AlterKampfGUI extends javax.swing.JFrame {
     /**
      * Creates new form AlterKampfGUI
      */
-    CtxAccess accessor;
-    Kill kill;
-    Eat eat;
+    private CtxAccess accessor;
+    private Kill kill;
+    private Eat eat;
     
     public AlterKampfGUI(ClientContext ctx, Kill kill, Eat eat)  {
         initComponents();

@@ -1,4 +1,3 @@
-
 package alterkampf;
 
 import org.powerbot.script.ClientAccessor;

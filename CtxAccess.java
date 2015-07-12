@@ -4,7 +4,6 @@ package alterkampf;
 
 
 import java.util.Arrays;
-import java.util.regex.Pattern;
 import org.powerbot.script.Filter;
 import org.powerbot.script.rt4.ClientContext;
 import org.powerbot.script.rt4.Item;
@@ -58,13 +57,8 @@ public class CtxAccess extends Task<ClientContext> {
     public int[] getFoodIDs(String[] names) {
       int[] finalarray;
         int arraySize;
-        String pattern;
         if(names.length > 0) {
-            pattern = names[0];
-            for(int i = 1; i < names.length; i++) {
-                pattern += "|" + names[i];
-            }
-            arraySize = ctx.inventory.select().name(Pattern.compile(pattern)).size();
+            arraySize = ctx.inventory.select().name(names).size();
             finalarray = new int[arraySize];
             for(int i = 0; i < arraySize; i++) {
                 finalarray[i] = ctx.inventory.poll().id();
@@ -77,13 +71,7 @@ public class CtxAccess extends Task<ClientContext> {
     public int[] getMonsterIDs(String[] names) {
         int[] finalarray;
         int arraySize;
-        String pattern;
-        pattern = names[0];
-        for(int i = 1; i < names.length; i++) {
-            pattern += "|" + names[i];
-        }
-        //ctx.backpack.select().name(Pattern.compile("(Copper|Tin) ore")).each(...)
-        arraySize = ctx.npcs.select().name(Pattern.compile(pattern)).size();
+        arraySize = ctx.npcs.select().name(names).size();
         finalarray = new int[arraySize];
         for(int i = 0; i < arraySize; i++) {
             finalarray[i] = ctx.npcs.poll().id();
