@@ -21,6 +21,7 @@ public class Loot extends Task<ClientContext> {
     @Override
     public void execute() {
         for (GroundItem item : ctx.groundItems) {
+            AlterKampf.status = "Picking up " + item.name();
             if (item.inViewport()) {
                 pickUp(item);
             } else {
